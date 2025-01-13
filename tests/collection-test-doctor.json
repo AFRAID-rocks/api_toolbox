@@ -1,0 +1,88 @@
+{
+  "info": {
+    "name": "Doctor API Tests",
+    "description": "Collection de tests pour l'API des médecins",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Obtenir tous les médecins",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/doctors",
+        "header": []
+      }
+    },
+    {
+      "name": "Obtenir un médecin par ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/doctors/1",
+        "header": []
+      }
+    },
+    {
+      "name": "Créer un nouveau médecin",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/doctors",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "firstName": "Jean",
+            "lastName": "Dupont",
+            "speciality": "Cardiologue",
+            "email": "jean.dupont@example.com",
+            "phone": "+33123456789",
+            "address": "123 Rue de la Santé, Paris"
+          }
+        }
+      }
+    },
+    {
+      "name": "Mettre à jour un médecin",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/doctors/1",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "firstName": "Jean",
+            "lastName": "Dupont",
+            "speciality": "Pédiatre",
+            "email": "jean.dupont@example.com",
+            "phone": "+33123456789",
+            "address": "456 Avenue de la République, Lyon"
+          }
+        }
+      }
+    },
+    {
+      "name": "Supprimer un médecin",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/doctors/1",
+        "header": []
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "info": {
+    "name": "Car API Tests",
+    "description": "Test collection for the cars API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get all cars",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/cars",
+        "header": []
+      }
+    },
+    {
+      "name": "Get car by ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/cars/1",
+        "header": []
+      }
+    },
+    {
+      "name": "Create new car",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/cars",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "brand": "Renault",
+            "model": "Clio",
+            "year": 2023,
+            "price": 20000,
+            "color": "Red"
+          }
+        }
+      }
+    },
+    {
+      "name": "Update car",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/cars/1",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": {
+            "brand": "Peugeot",
+            "model": "208",
+            "year": 2022,
+            "price": 18500,
+            "color": "Blue"
+          }
+        }
+      }
+    },
+    {
+      "name": "Delete car",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/cars/1",
+        "header": []
+      }
+    }
+  ]
+}
