@@ -52,15 +52,12 @@ def main():
     results = []
     for file in files:
         is_valid = is_valid_postman_collection(file)
-        if args.discover:
-            if is_valid:
-                results.append(file)
-                print(file)
-        else:
-            status = "Valid" if is_valid else "Invalid"
-            message = f"{file}: {status}"
-            results.append(message)
-            print(message)
+        status = "Valid" if is_valid else "Invalid"
+        message = f"{file}: {status}"
+        print(message)
+        if is_valid:
+            results.append(file)
+
 
     # Write results if output file specified
     if args.output and results:
