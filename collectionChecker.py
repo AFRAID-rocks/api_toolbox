@@ -9,7 +9,6 @@ It can process multiple files or entire directories.
 
 import argparse
 import json
-import os
 from typing import List, Tuple
 from pathlib import Path
 
@@ -66,13 +65,47 @@ def process_input_path(input_path: str, max_depth: int = 5) -> List[str]:
     if path.is_file():
         return [str(path)]
     elif path.is_dir():
-        # Calculate glob pattern based on depth
-        pattern = '/**/*.json'
-        if max_depth > 0:
-            pattern = '/' + '/'.join(['*'] * max_depth) + '/*.json'
-        return [str(p) for p in path.glob(pattern.lstrip('/'))]
+        # Using rglob for recursive search of all .json files
+        return [str(p) for p in path.rglob('*.json') 
+                if len(p.relative_to(path).parts) <= max_depth]
     else:
         return []
+
+
+def write_to_file(file_path: str, content: List[str]) -> None:
+    """
+    Write content to a file.
+
+    Args:
+        file_path (str): Path to output file
+        content (List[str]): List of strings to write
+    """
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(content))
+        print(f"\nResults written to {file_path}")
+    except Exception as e:
+        print(f"Error writing to output file: {str(e)}")
+
+
+def process_normal_mode(files_to_check: List[str]) -> List[str]:
+    """
+    Process files in normal mode with detailed output.
+
+    Args:
+        files_to_check (List[str]): List of files to check
+
+    Returns:
+        List[str]: List of formatted results
+    """
+    results = []
+    for file_path in files_to_check:
+        is_valid, message = is_valid_postman_collection(file_path)
+        status = "Valid" if is_valid else "Invalid"
+        result = f"{file_path}: {status} - {message}"
+        results.append(result)
+        print(result)
+    return results
 
 
 def main():
@@ -113,7 +146,7 @@ def main():
         print("No files found to check!")
         return
 
-    # Check each file and collect results
+    # Check each file and collect valid collections
     valid_collections = []
     for file_path in files_to_check:
         is_valid, _ = is_valid_postman_collection(file_path)
@@ -125,23 +158,13 @@ def main():
         # In discovery mode, only print valid collection paths
         for path in valid_collections:
             print(path)
+        if args.output:
+            write_to_file(args.output, valid_collections)
     else:
         # Normal mode with detailed output
-        results = []
-        for file_path in files_to_check:
-            is_valid, message = is_valid_postman_collection(file_path)
-            status = "Valid" if is_valid else "Invalid"
-            result = f"{file_path}: {status} - {message}"
-            results.append(result)
-            print(result)
-
+        results = process_normal_mode(files_to_check)
         if args.output:
-            try:
-                with open(args.output, 'w', encoding='utf-8') as f:
-                    f.write('\n'.join(results))
-                print(f"\nResults written to {args.output}")
-            except Exception as e:
-                print(f"Error writing to output file: {str(e)}")
+            write_to_file(args.output, results)
 
 
 if __name__ == "__main__":
