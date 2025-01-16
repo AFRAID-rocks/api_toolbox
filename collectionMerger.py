@@ -20,8 +20,12 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         '-i', '--input',
         nargs='+',
-        required=True,
+        required=False,
         help='Input files or directory containing Postman collections'
+    )
+    parser.add_argument(
+        '-f', '--file',
+        help='File containing collection paths (one per line)'
     )
     parser.add_argument(
         '-o', '--output',
@@ -58,6 +62,8 @@ def get_collection_files(input_paths: List[str]) -> List[str]:
     Returns:
         List[str]: List of collection file paths
     """
+    if not input_paths:
+        return []
     collection_files = []
     for path in input_paths:
         if os.path.isdir(path):
@@ -107,8 +113,21 @@ def main():
     args = parse_arguments()
     
     try:
+        input_paths = []
+        if args.input:
+            input_paths.extend(args.input)
+        
+        # Add paths from file if specified
+        if args.file:
+            with open(args.file, 'r') as f:
+                file_paths = [line.strip() for line in f if line.strip()]
+                input_paths.extend(file_paths)
+        
+        if not input_paths:
+            raise ValueError("No input provided. Use either -i/--input or -f/--file")
+            
         # Get all collection files
-        collection_files = get_collection_files(args.input)
+        collection_files = get_collection_files(input_paths)
         
         if not collection_files:
             raise ValueError("No JSON files found in the specified input paths")
